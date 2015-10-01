@@ -1,0 +1,66 @@
+<?php
+
+namespace AppBundle\Document;
+
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+
+/**
+ * @MongoDB\Document(collection="data")
+ */
+class Enquiry
+{
+    /**
+     * @MongoDB\Id
+     */
+    protected $id;
+
+    /**
+     * @MongoDB\Date
+     */
+    protected $arrival;
+
+    /**
+     * @MongoDB\Date
+     */
+    protected $departure;
+
+    /**
+     * @MongoDB\String
+     */
+    protected $country;
+
+    /**
+     * @MongoDB\Int
+     */
+    protected $adults;
+
+    /**
+     * @MongoDB\Int
+     */
+    protected $children;
+
+    /**
+     * @MongoDB\Int
+     */
+    protected $destination;
+
+    /**
+     * @MongoDB\Int
+     */
+    protected $category;
+
+    /**
+     * @MongoDB\Int
+     */
+    protected $booking;
+
+    /**
+     * @MongoDB\Int
+     */
+    protected $cancellation;
+
+    /**
+     * @MongoDB\Date
+     */
+    protected $submitted_on;
+}

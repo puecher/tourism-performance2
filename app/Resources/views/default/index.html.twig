@@ -1,0 +1,252 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Analyzer{% endblock %}
+
+{% block body %}
+  <div class="container-fluid">
+    <h1>Analyzer</h1>
+    <div id="add-filter">
+      <form method="post" action="" class="row">
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label for="filter">Filter Name</label>
+            <input type="text" value="" id="filter" class="form-control">
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label for="color">Filter Color</label>
+            <input type="text" value="" id="color" class="form-control" />
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label for="arrival">Arrival</label>
+            <input type="text" placeholder="YYYY-MM-DD" id="arrival" class="form-control datepicker" value="" name="asdf">
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label for="arrival">Departure</label>
+            <input type="text" class="form-control datepicker" id="departure" placeholder="YYYY-MM-DD" value="">
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label for="country">Country</label>
+            <select multiple class="form-control" id="country">
+              {% for country in countries %}
+                <option value="{{ country }}">{{ country }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label for="adults">Adults</label>
+            <select multiple class="form-control" id="adults">
+              {% for key, adult in adults %}
+                <option value="{{ key }}">{{ adult }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label for="children">Children</label>
+            <select multiple class="form-control" id="children">
+              {% for key, child in children %}
+                <option value="{{ key }}">{{ child }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label for="destination">Destination</label>
+            <select multiple class="form-control" id="destination">
+              {% for key, municipality in municipalities %}
+                <option value="{{ key }}">{{ municipality }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select multiple class="form-control" id="category">
+              {% for key, category in categories %}
+                <option value="{{ key }}">{{ category }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label for="submitted_on">Enquired/Booked On</label>
+            <input type="text" class="form-control datepicker" id="submitted_on" placeholder="YYYY-MM-DD" value="">
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label for="type">Type</label>
+            <select class="form-control" id="group">
+              <option value="0">Anfragen</option>
+              <option value="1">Buchungen</option>
+              <option value="2">Stornierungen</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <div class="form-group">
+            <button class="btn btn-primary">Add filter</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div id="presets">
+      <h2>Presets</h2>
+      <ul>
+        {% for key, preset in presets %}
+          <li><a href="?preset={{ key }}">{{ preset.name }}</a></li>
+        {% endfor %}
+        <!-- <li>✓ Wann wird für Ferragosto angefragt/gebucht?</li>
+        <li>✓ Wann wird für Ostern angefragt/gebucht?</li>
+        <li>✓ Wann wird für Gröden angefragt/gebucht?</li>
+        <li>✓ Wann wird für Städte (Bozen, ...) angefragt/gebucht?</li>
+        <li>✓ Kurve (Verlauf im Jahr) der Anfragen/Buchungen von unterschiedlichen Ortschaften vergleichen</li>
+        <li>✓ Kurve (Verlauf im Jahr) der Anfragen/Buchungen von unterschiedlichen Kategorien vergleichen</li>
+        <li>✓ Delta zwischen Anreisetag und Anfragetag pro XY</li>
+        <li>An welchen Wochentag und Uhrzeiten wird für Gröden angefragt/gebucht, als Jahresverlauf?</li>
+        <li>✓ Vergleich des Buchungsverlaufes und des Stornoverlaufes im Jahr</li> -->
+      </ul>
+    </div>
+    <div id="filters">
+      <h2>Applied filters</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Color</th>
+            <th>Arrival</th>
+            <th>And/Or</th>
+            <th>Departure</th>
+            <th>Country</th>
+            <th>Adults</th>
+            <th>Children</th>
+            <th>Destination</th>
+            <th>Category</th>
+            <th>Enquired/Booked On</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for key, filter in filters %}
+            <tr class="filter">
+              <th scope="row">{{ key }}</th>
+              <td>{% if filter.color is defined %}{{ filter.color }}{% endif %}</td>
+              <td>{% if filter.arrival is defined %}{{ filter.arrival }}{% endif %}</td>
+              <td>{% if filter.arrivalDepartureOr is defined %}{% if 1 == filter.arrivalDepartureOr %}Or{% else %}And{% endif %}{% endif %}</td>
+              <td>{% if filter.departure is defined %}{{ filter.departure }}{% endif %}</td>
+              <td>{% if filter.country is defined %}{{ filter.country|join(', ') }}{% endif %}</td>
+              <td>{% if filter.adults is defined %}{{ filter.adults|join(', ') }}{% endif %}</td>
+              <td>{% if filter.children is defined %}{{ filter.children|join(', ') }}{% endif %}</td>
+              <td>{% if filter.destination is defined %}{% for k in filter.destination %}{{ municipalities[k] }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}</td>
+              <td>{% if filter.category is defined %}{% for k in filter.category %}{{ categories[k] }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}</td>
+              <td>{% if filter.submitted_on is defined %}{{ filter.submitted_on }}{% endif %}</td>
+              <td>{% if filter.type is defined %}{{ filter.type }}{% endif %}</td>
+            </tr>
+          {% endfor %}
+      </table>
+    </div>
+    <div id="results">
+      <h2>Chart</h2>
+      <div class="form-group">
+        <label for="group">Y-Axis</label>
+        <select class="form-control" id="group">
+          <option value="0"{% if 0 == group %} selected="selected"{% endif %}>Anfragen (submitted_on)</option>
+          <option value="1"{% if 1 == group %} selected="selected"{% endif %}>Aufenthaltsdauer (diff arrival & departure)</option>
+          <option value="2"{% if 2 == group %} selected="selected"{% endif %}>Delta zwischen Anreisetag und Anfragetag (diff arrival & submitted_on)</option>
+        </select>
+      </div>
+      {% if results|length %}
+        <div id="chart" style="width: 100%; height: 500px"></div>
+      {% else %}
+        <div>No Data.</div>
+      {% endif %}
+      <script type="text/javascript"
+        src="https://www.google.com/jsapi?autoload={
+          'modules':[{
+            'name':'visualization',
+            'version':'1',
+            'packages':['corechart']
+          }]
+        }"></script>
+      <!-- <script type="text/javascript" src="https://www.google.com/jsapi"></script> -->
+      <script type="text/javascript">
+        //google.load('visualization', '1.1', {packages: ['line']});
+        google.setOnLoadCallback(drawChart);
+        function drawChart() {
+        {% if results|length %}
+          var data = new google.visualization.DataTable();
+          data.addColumn('date', 'Date');
+          {% for key, filter in filters %}
+            data.addColumn('number', 'Filter #{{ key }}');
+          {% endfor %}
+          data.addRows([
+            {% for row in results %}
+              [{{ row.formatted }}{% for i in 0..filters|length - 1 %}, {% if row.counts[i] is defined %}{{ row.counts[i] }}{% else %}0{% endif %}{% endfor %}],
+            {% endfor %}
+          ]);
+          data.sort([{column: 0}]);
+          var options = {
+            //curveType: 'function',
+            legend: { position: 'bottom' },
+            series: {
+              {% for key, filter in filters %}
+                {% if filter.color is defined %}{{ key }}: { color: '{{ filter.color }}' },{% endif %}
+              {% endfor %}
+            },
+            trendlines: { {% for i in 0..filters|length - 1 %}{{ i }}: { visibleInLegend: true },{% endfor %} }
+          };
+          var chart = new google.visualization.LineChart(document.getElementById('chart'));
+          //var chart = new google.charts.Line(document.getElementById('chart'));
+          chart.draw(data, options);
+        {% endif %}
+        }
+      </script>
+      {#{ dump( results ) }#}
+    </div>
+  </div>
+{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.3.0/css/bootstrap-colorpicker.min.css"> -->
+<style>
+  body { background: #F5F5F5; font: 18px/1.5 sans-serif; }
+</style>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.3.0/js/bootstrap-colorpicker.min.js"></script>
+<script>
+jQuery(function($) {
+  $('#add-filter .btn-primary').on('click', function() {
+    return true;
+  });
+  $('.datepicker').daterangepicker({
+    locale: {
+      //format: 'DD.MM.YYYY'
+      format: 'YYYY-MM-DD'
+    }
+  });
+  //$('.colorpicker').colorpicker();
+})
+</script>
+{% endblock %}
